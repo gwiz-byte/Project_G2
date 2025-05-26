@@ -1,4 +1,4 @@
-package Product_Management.model;
+package model;
 
 public class Products {
 

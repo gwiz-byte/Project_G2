@@ -1,11 +1,11 @@
 package dal;
 
-import DAO.DBContext;
+import dal.DBContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
-import Product_Management.model.*;
+import model.*;
 
 //Them "getConnection()" trong DBContext
 //----------------------------Get all product
