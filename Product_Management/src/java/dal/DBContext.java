@@ -1,48 +1,75 @@
-package DAO;
+package dal;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+/**
+ *
+ * @author FPT University - PRJ30X
+ */
 public class DBContext {
-    private static DBContext instance = new DBContext();
-    private Connection connection;
 
-    //Static
-    public static DBContext getInstance() {
-        return instance;
-    }
+    protected Connection connection;
 
-    public Connection getConnection() {
-        return connection;
-    }
-
-    private DBContext() {
+    public DBContext() {
+        //@Students: You are allowed to edit user, pass, url variables to fit 
+        //your system configuration
+        //You can also add more methods for Database Interaction tasks. 
+        //But we recommend you to do it in another class
+        // For example : StudentDBContext extends DBContext , 
+        //where StudentDBContext is located in dal package, 
         try {
-            if (connection == null || connection.isClosed()) {
-                String user = "root";
-                String password = "msqldt154A!";
-                String url = "jdbc:mysql://localhost:3306/project_g2?useSSL=false&serverTimezone=UTC";
-
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection(url, user, password);
-                System.out.println("✅ Kết nối MySQL thành công!");
-            }
-        } catch (Exception e) {
-            connection = null;
-            System.out.println("❌ Kết nối MySQL thất bại: " + e.getMessage());
+            String user = "sa";
+            String pass = "123";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=HE191618_Project";
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            connection = DriverManager.getConnection(url, user, pass);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static void testConnection() {
-        Connection conn = DBContext.getInstance().getConnection();
-        if (conn != null) {
-            System.out.println("✅ Database đã kết nối!");
-        } else {
-            System.out.println("❌ Không thể kết nối đến database!");
+    public ResultSet getData(String sql) {
+
+        ResultSet rs = null;
+        try {
+
+            Statement st = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            rs = st.executeQuery(sql);
+
+        } catch (SQLException ex) {
+            ex.getStackTrace();
+        }
+        return rs;
+    }
+
+    public boolean isConnected() {
+        try {
+            return connection != null && !connection.isClosed();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 
+    // Phương thức main để kiểm tra kết nối
     public static void main(String[] args) {
-        testConnection();
+        DBContext dbContext = new DBContext();
+        if (dbContext.isConnected()) {
+            System.out.println("Kết nối cơ sở dữ liệu thành công!");
+        } else {
+            System.out.println("Kết nối cơ sở dữ liệu thất bại.");
+        }
+
     }
+
 }
