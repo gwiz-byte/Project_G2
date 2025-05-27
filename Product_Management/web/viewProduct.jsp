@@ -23,11 +23,36 @@
             img {
                 max-width: 60px;
             }
+            .search-bar {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            .search-bar input[type="text"] {
+                padding: 8px;
+                width: 300px;
+            }
+            .search-bar button {
+                padding: 8px 12px;
+            }
+            .top-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
         </style>
     </head>
     <body>
 
-        <a href="${pageContext.request.contextPath}/productservlet?service=insertProduct">Insert Product</a>
+        <div class="top-bar">
+            <a href="${pageContext.request.contextPath}/productservlet?service=insertProduct">Insert Product</a>
+
+            <form action="${pageContext.request.contextPath}/productservlet?service=searchProduct" method="get" class="search-bar">
+                <input type="hidden" name="service" value="searchProduct"/>
+                <input type="text" name="keyword" placeholder="Search by name, brand, etc."/>
+                <button type="submit">Search</button>
+            </form>
+        </div>
 
         <h1>Product List</h1>
 
@@ -44,6 +69,7 @@
                     <th>Image</th>
                     <th>Description</th>
                     <th>Spec Description</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
