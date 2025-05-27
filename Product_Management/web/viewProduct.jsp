@@ -1,63 +1,64 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.Vector, model.Products" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insert Product</title>
-    <link rel="stylesheet" href="">
+    <title>Product List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        img {
+            max-width: 60px;
+        }
+    </style>
 </head>
-
 <body>
-    <div class="container">
-        <h2>Insert Product</h2>
-        <form>
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Brand</label>
-                <input type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Category</label>
-                <input type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Price</label>
-                <input type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Stock</label>
-                <input type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Image url</label>
-                <input type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Description</label>
-                <input type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Spec description</label>
-                <input type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label>
-                    Status
-                </label>
-                <label>
-                    <input type="radio" name="option" value="1"> Option 1
-                </label>
-                <label>
-                    <input type="radio" name="option" value="2"> Option 2
-                </label>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
-</body>
+    <h1>Product List</h1>
 
+    <table>
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Name</th>
+                <th>Brand</th>
+                <th>Category ID</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Spec Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="product" items="${product}">
+                <tr>
+                    <td>${product.id}</td>
+                    <td>${product.name}</td>
+                    <td>${product.brand}</td>
+                    <td>${product.category_id}</td>
+                    <td>$${product.price}</td>
+                    <td>${product.stock}</td>
+                    <td>${product.status}</td>
+                    <td><img src="${product.image_url}" alt="${product.name}"></td>
+                    <td>${product.description}</td>
+                    <td>${product.spec_description}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+</body>
 </html>

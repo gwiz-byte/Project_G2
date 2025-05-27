@@ -1,14 +1,14 @@
-package Product_Management.dal;
+package dal;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
-import Product_Management.model.*;
+import model.*;
 
 //Them "connection" trong DBContext
 //----------------------------Get all product
-public class ProductDAO {
+public class ProductDAO extends DBContext {
 
     public Vector<Products> getAllProduct() {
         Vector<Products> listProduct = new Vector<>();
@@ -159,6 +159,7 @@ public class ProductDAO {
 
 //---------------View product detail
     public Products getProductById(int productId) {
+        Products p = null;
         String sql = "SELECT id, name, brand, category_id, price, stock, status, image_url, description, spec_description "
                 + "FROM products WHERE id=?";
         try {
@@ -167,7 +168,7 @@ public class ProductDAO {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 String jsonSpec = rs.getString("spec_description");
-                Products p = new Products(
+                p = new Products(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("brand"),
@@ -177,12 +178,23 @@ public class ProductDAO {
                         rs.getString("status"),
                         rs.getString("image_url"),
                         rs.getString("description"),
-                        jsonSpec     
-                    );
+                        jsonSpec
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return p;
     }
+
+    public static void main(String[] args) {
+        ProductDAO dao = new ProductDAO();
+        Vector<Products> products = dao.getAllProduct();
+
+        System.out.println("Total products: " + products.size());
+        for (Products p : products) {
+            System.out.println(p);
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package Product_Management.model;
+package model;
 
 public class Products {
 
@@ -13,6 +13,10 @@ public class Products {
     private String description;
     private String spec_description;
 
+    public Products(){
+        
+    }
+    
     public Products(int id, String name, String brand, int category_id, double price,
                 int stock, String status, String image_url,
                 String description, String spec_description) {
