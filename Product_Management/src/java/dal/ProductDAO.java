@@ -26,10 +26,10 @@ public class ProductDAO extends DBContext {
                         rs.getInt("category_id"),
                         rs.getDouble("price"),
                         rs.getInt("stock"),
-                        rs.getString("status"),
                         rs.getString("image_url"),
                         rs.getString("description"),
-                        jsonSpec
+                        jsonSpec,
+                        rs.getString("status")
                 );
                 listProduct.add(p);
             }
@@ -56,10 +56,10 @@ public class ProductDAO extends DBContext {
                         rs.getInt("category_id"),
                         rs.getDouble("price"),
                         rs.getInt("stock"),
-                        rs.getString("status"),
                         rs.getString("image_url"),
                         rs.getString("description"),
-                        jsonSpec
+                        jsonSpec,
+                        rs.getString("status")
                 );
                 list.add(p);
             }
@@ -73,7 +73,7 @@ public class ProductDAO extends DBContext {
     public void insertProduct(Products p) {
         String sql = "INSERT INTO products "
                 + "(name, brand, category_id, price, "
-                + "stock, status, image_url, description, spec_description) "
+                + "stock, image_url, description, spec_description, status) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ptm = connection.prepareStatement(sql);
@@ -82,10 +82,10 @@ public class ProductDAO extends DBContext {
             ptm.setInt(3, p.getCategory_id());
             ptm.setDouble(4, p.getPrice());
             ptm.setInt(5, p.getStock());
-            ptm.setString(6, p.getStatus());
-            ptm.setString(7, p.getImage_url());
-            ptm.setString(8, p.getDescription());
-            ptm.setString(9, p.getSpec_description());
+            ptm.setString(6, p.getImage_url());
+            ptm.setString(7, p.getDescription());
+            ptm.setString(8, p.getSpec_description());
+            ptm.setString(9, p.getStatus());
             ptm.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -95,8 +95,8 @@ public class ProductDAO extends DBContext {
 //--------------------------Update product
     public void updateProduct(Products p) {
         String sql = "UPDATE products SET name = ?, brand = ?, category_id = ?, price = ?, "
-                + "stock = ?, status = ?, "
-                + "image_url = ?, description = ?, spec_description = ? WHERE id = ?";
+                + "stock = ? "
+                + "image_url = ?, description = ?, spec_description = ?, status = ? WHERE id = ?";
         try {
             PreparedStatement ptm = connection.prepareStatement(sql);
             ptm.setString(1, p.getName());
@@ -104,10 +104,10 @@ public class ProductDAO extends DBContext {
             ptm.setInt(3, p.getCategory_id());
             ptm.setDouble(4, p.getPrice());
             ptm.setInt(7, p.getStock());
-            ptm.setString(8, p.getStatus());
-            ptm.setString(9, p.getImage_url());
-            ptm.setString(10, p.getDescription());
-            ptm.setString(11, p.getSpec_description());
+            ptm.setString(8, p.getImage_url());
+            ptm.setString(9, p.getDescription());
+            ptm.setString(10, p.getSpec_description());
+            ptm.setString(11, p.getStatus());
             ptm.setInt(12, p.getId());
             ptm.executeUpdate();
         } catch (SQLException ex) {
@@ -144,10 +144,10 @@ public class ProductDAO extends DBContext {
                         rs.getInt("category_id"),
                         rs.getDouble("price"),
                         rs.getInt("stock"),
-                        rs.getString("status"),
                         rs.getString("image_url"),
                         rs.getString("description"),
-                        jsonSpec
+                        jsonSpec,
+                        rs.getString("status")
                 );
                 list.add(p);
             }
@@ -160,7 +160,7 @@ public class ProductDAO extends DBContext {
 //---------------View product detail
     public Products getProductById(int productId) {
         Products p = null;
-        String sql = "SELECT id, name, brand, category_id, price, stock, status, image_url, description, spec_description "
+        String sql = "SELECT id, name, brand, category_id, price, stock, image_url, description, spec_description, status "
                 + "FROM products WHERE id=?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -175,10 +175,10 @@ public class ProductDAO extends DBContext {
                         rs.getInt("category_id"),
                         rs.getDouble("price"),
                         rs.getInt("stock"),
-                        rs.getString("status"),
                         rs.getString("image_url"),
                         rs.getString("description"),
-                        jsonSpec
+                        jsonSpec,
+                        rs.getString("status")
                 );
             }
         } catch (SQLException e) {

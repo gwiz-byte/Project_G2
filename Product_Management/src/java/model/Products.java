@@ -8,28 +8,28 @@ public class Products {
     private int category_id;
     private double price;
     private int stock;
-    private String status;
     private String image_url;
     private String description;
     private String spec_description;
+    private String status;
 
     public Products(){
         
     }
     
     public Products(int id, String name, String brand, int category_id, double price,
-                int stock, String status, String image_url,
-                String description, String spec_description) {
+                int stock, String image_url,
+                String description, String spec_description, String status) {
         this.id = id;
         this.name = name;
         this.brand = brand;
         this.category_id = category_id;
         this.price = price;
         this.stock = stock;
-        this.status = status;
         this.image_url = image_url;
         this.description = description;
         this.spec_description = spec_description;
+        this.status = status;
     }
 
     public int getId() {
