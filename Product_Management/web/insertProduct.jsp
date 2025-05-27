@@ -52,7 +52,7 @@
             </select>
 
             <button type="submit">Add Product</button>
-            <a href="adminoptions?service=productList" style="text-decoration:none;">
+            <a href="adminoptions?service=viewProduct" style="text-decoration:none;">
                 <button type="button" style="margin-left:10px;">Cancel</button>
             </a>
         </form>
