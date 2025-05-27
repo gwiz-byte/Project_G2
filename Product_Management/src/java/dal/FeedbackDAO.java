@@ -139,6 +139,48 @@ public class FeedbackDAO extends DBContext {
         }
         return null;
     }
+
+    // Get all feedback with optional pagination
+    public Vector<Feedback> getAllFeedback(int page, int pageSize) {
+        Vector<Feedback> listFeedback = new Vector<>();
+        String sql = "SELECT * FROM feedback ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        try {
+            PreparedStatement ptm = getConnection().prepareStatement(sql);
+            ptm.setInt(1, pageSize);
+            ptm.setInt(2, (page - 1) * pageSize);
+            ResultSet rs = ptm.executeQuery();
+            while (rs.next()) {
+                Feedback f = new Feedback(
+                    rs.getInt("id"),
+                    rs.getInt("product_id"),
+                    rs.getInt("user_id"),
+                    rs.getInt("rating"),
+                    rs.getString("content"),
+                    rs.getString("created_at")
+                );
+                listFeedback.add(f);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return listFeedback;
+    }
+
+    // Get total count of feedback
+    public int getTotalFeedbackCount() {
+        String sql = "SELECT COUNT(*) as total FROM feedback";
+        try {
+            PreparedStatement ptm = getConnection().prepareStatement(sql);
+            ResultSet rs = ptm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         FeedbackDAO dao = new FeedbackDAO();
         // Test with product ID 1
@@ -157,10 +199,4 @@ public class FeedbackDAO extends DBContext {
         double avgRating = dao.getAverageRating(1);
         System.out.println("\nAverage rating for product ID 1: " + avgRating);
     }
-    
-    
-    
-    
-    
-    
 } 
