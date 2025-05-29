@@ -49,7 +49,23 @@
 
             <form action="${pageContext.request.contextPath}/productservlet?service=searchProduct" method="get" class="search-bar">
                 <input type="hidden" name="service" value="searchProduct"/>
+
                 <input type="text" name="keyword" placeholder="Search by name, brand, etc."/>
+
+                Brand:
+                <select name="brand">
+                    <option value="">All</option>
+                    <option value="Logitech">Logitech</option>
+                    <option value="Razer">Razer</option>
+                    <option value="Corsair">Corsair</option>
+                    <!-- Add more brands or load dynamically -->
+                </select>
+
+                Price:
+                <input type="number" name="minPrice" step="0.01" placeholder="Min" style="width: 80px;">
+                -
+                <input type="number" name="maxPrice" step="0.01" placeholder="Max" style="width: 80px;">
+
                 <button type="submit">Search</button>
             </form>
         </div>
