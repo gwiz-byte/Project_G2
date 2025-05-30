@@ -41,7 +41,7 @@ public class ProductServlet extends HttpServlet {
             switch (service) {
                 case "viewProduct":
                     Vector<Products> plist = dao.getAllProduct();
-                    // Đẩy dữ liệu lên request để hiển thị trong JSP
+                    
                     request.setAttribute("product", plist);
                     request.getRequestDispatcher("viewProduct.jsp").forward(request, response);
                     break;
@@ -168,5 +168,4 @@ public class ProductServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }
