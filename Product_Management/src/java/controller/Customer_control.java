@@ -251,56 +251,90 @@ public class Customer_control extends HttpServlet {
         CustomerDAO customerDAO = new CustomerDAO();
         
         try {
+            System.out.println("=== Starting Customer Management System Tests ===\n");
+            
             // Test Case 1: Add new customer
             System.out.println("Test Case 1: Adding new customer");
+            System.out.println("------------------------------");
             Customer newCustomer = new Customer(
                 0,
                 "Test User",
-                "test@example.com",
+                "test" + System.currentTimeMillis() + "@example.com", // Ensure unique email
                 "password123",
                 "1234567890",
                 "123 Test Street",
                 "customer"
             );
             boolean added = customerDAO.insertCustomer(newCustomer);
-            System.out.println("Added new customer: " + (added ? "success" : "failed"));
+            System.out.println("Added new customer: " + (added ? "SUCCESS ✓" : "FAILED ✗"));
             
             // Test Case 2: Search customers
             System.out.println("\nTest Case 2: Searching for customers");
+            System.out.println("--------------------------------");
             Vector<Customer> searchResults = customerDAO.searchCustomers("Test", 1, 10);
             System.out.println("Found " + searchResults.size() + " customers");
-            for (Customer c : searchResults) {
-                System.out.println(c.toString());
-            }
+            searchResults.forEach(customer -> 
+                System.out.println("- " + customer.getName() + " (" + customer.getEmail() + ")")
+            );
             
             // Test Case 3: Update customer
             System.out.println("\nTest Case 3: Updating customer");
+            System.out.println("----------------------------");
             if (!searchResults.isEmpty()) {
                 Customer customerToUpdate = searchResults.get(0);
+                String originalName = customerToUpdate.getName();
                 customerToUpdate.setName("Updated Test User");
                 customerToUpdate.setPhone_number("9876543210");
                 boolean updated = customerDAO.updateCustomer(customerToUpdate);
-                System.out.println("Updated customer: " + (updated ? "success" : "failed"));
+                System.out.println("Updating customer '" + originalName + "': " + (updated ? "SUCCESS ✓" : "FAILED ✗"));
                 
                 // Verify update
                 Customer updatedCustomer = customerDAO.getCustomerById(customerToUpdate.getId());
-                System.out.println("Updated customer details: " + updatedCustomer.toString());
+                System.out.println("Updated customer details: " + updatedCustomer.getName() + 
+                                 " (Phone: " + updatedCustomer.getPhone_number() + ")");
             }
             
             // Test Case 4: Get customers by role
             System.out.println("\nTest Case 4: Getting customers by role");
+            System.out.println("---------------------------------");
             Vector<Customer> customersByRole = customerDAO.getCustomersByRole("customer");
             System.out.println("Found " + customersByRole.size() + " customers with role 'customer'");
+            customersByRole.forEach(customer -> 
+                System.out.println("- " + customer.getName() + " (Role: " + customer.getRole() + ")")
+            );
             
             // Test Case 5: Error handling
-            System.out.println("\nTest Case 5: Error handling - Invalid customer ID");
+            System.out.println("\nTest Case 5: Error handling tests");
+            System.out.println("------------------------------");
+            
+            // Test 5.1: Invalid customer ID
+            System.out.println("5.1 Testing invalid customer ID:");
             Customer invalidCustomer = customerDAO.getCustomerById(-1);
-            if (invalidCustomer == null) {
-                System.out.println("Successfully handled invalid customer ID");
+            System.out.println("Invalid customer ID test: " + 
+                             (invalidCustomer == null ? "SUCCESS ✓" : "FAILED ✗"));
+            
+            // Test 5.2: Duplicate email
+            System.out.println("5.2 Testing duplicate email:");
+            try {
+                Customer duplicateCustomer = new Customer(
+                    0,
+                    "Duplicate User",
+                    searchResults.get(0).getEmail(), // Using existing email
+                    "password123",
+                    "1234567890",
+                    "123 Test Street",
+                    "customer"
+                );
+                customerDAO.insertCustomer(duplicateCustomer);
+                System.out.println("Duplicate email test: FAILED ✗");
+            } catch (Exception e) {
+                System.out.println("Duplicate email test: SUCCESS ✓");
             }
             
+            System.out.println("\n=== Customer Management System Tests Completed ===");
+            
         } catch (Exception e) {
-            System.out.println("Error during testing: " + e.getMessage());
+            System.out.println("\n❌ ERROR during testing: " + e.getMessage());
             e.printStackTrace();
         }
     }
