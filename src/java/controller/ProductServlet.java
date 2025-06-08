@@ -161,9 +161,11 @@ public class ProductServlet extends HttpServlet {
 
                     ProductDAO ppdao = new ProductDAO();
                     Products product = ppdao.getProductById(productID);
+                    Vector<Products> relatedProducts = ppdao.getProductByCategory(product.getCategory_id());
 
                     // Đẩy dữ liệu lên request để hiển thị trong JSP
                     request.setAttribute("product", product);
+                    request.setAttribute("relatedProducts", relatedProducts);
                     request.getRequestDispatcher("productDetail.jsp").forward(request, response);
                     break;
                 default:

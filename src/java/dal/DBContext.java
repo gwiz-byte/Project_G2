@@ -19,7 +19,7 @@ public class DBContext {
         try {
             if (connection == null || connection.isClosed()) {
                 String user = "root";
-                String password = "sasa";
+                String password = "msqldt154A!";
                 String url = "jdbc:mysql://localhost:3306/project_g2?useSSL=false&serverTimezone=UTC";
 
                 Class.forName("com.mysql.cj.jdbc.Driver");

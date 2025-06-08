@@ -47,5 +47,22 @@
                 </div>
             </div>
         </div>
+        <hr>
+        <h4 class="mt-5">Related Products</h4>
+        <div class="row">
+            <c:forEach var="p" items="${relatedProducts}">
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100">
+                        <img src="${p.image_url}" class="card-img-top" alt="${p.name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${p.name}</h5>
+                            <p class="card-text">${p.brand}</p>
+                            <p class="card-text text-danger">$${p.price}</p>
+                            <a href="${pageContext.request.contextPath}/productDetail?productID=${p.id}" class="btn btn-outline-primary btn-sm">View</a>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
     </body>
 </html>
