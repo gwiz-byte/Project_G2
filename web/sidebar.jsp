@@ -15,7 +15,7 @@
     
     <!-- Admin Profile -->
     <div class="admin-profile d-flex align-items-center">
-        <img src="https://ui-avatars.com/api/?name=${user.fullname}&background=random" alt="Admin Avatar" class="admin-avatar">
+        <img src="${pageContext.request.contextPath}/assets/admin-avartar.png.jpg" alt="Admin Avatar" class="admin-avatar" style="width:50px;height:50px;border-radius:50%;object-fit:cover;background:#e0e7ff;">
         <div class="admin-info">
             <h6>${user.fullname}</h6>
             <small>Administrator</small>
@@ -26,19 +26,19 @@
         <a href="${pageContext.request.contextPath}/adminDashboard.jsp" class="<%= request.getRequestURI().endsWith("adminDashboard.jsp") ? "active" : "" %>">
             <i class="fas fa-home me-2"></i> Dashboard
         </a>
-        <a href="${pageContext.request.contextPath}/categoryList.jsp" class="<%= request.getRequestURI().endsWith("categoryList.jsp") ? "active" : "" %>">
+        <a href="${pageContext.request.contextPath}/categoryList.jsp" target="mainFrame" class="<%= request.getRequestURI().endsWith("categoryList.jsp") ? "active" : "" %>">
             <i class="fas fa-list me-2"></i> Categories
         </a>
-        <a href="productservlet" class="<%= request.getRequestURI().contains("productservlet") ? "active" : "" %>">
+        <a href="productservlet" target="mainFrame" class="<%= request.getRequestURI().contains("productservlet") ? "active" : "" %>">
             <i class="fas fa-box me-2"></i> Products
         </a>
-        <a href="${pageContext.request.contextPath}/viewcustomers" class="<%= request.getRequestURI().contains("viewcustomers") ? "active" : "" %>">
+        <a href="${pageContext.request.contextPath}/viewcustomers" target="mainFrame" class="<%= request.getRequestURI().contains("viewcustomers") ? "active" : "" %>">
             <i class="fas fa-users me-2"></i> Customers
         </a>
-        <a href="${pageContext.request.contextPath}/viewblogs" class="<%= request.getRequestURI().contains("viewblogs") ? "active" : "" %>">
+        <a href="${pageContext.request.contextPath}/viewblogs" target="mainFrame" class="<%= request.getRequestURI().contains("viewblogs") ? "active" : "" %>">
             <i class="fas fa-blog me-2"></i> Blogs
         </a>
-        <a href="${pageContext.request.contextPath}/viewfeedback" class="<%= request.getRequestURI().contains("viewfeedback") ? "active" : "" %>">
+        <a href="${pageContext.request.contextPath}/viewfeedback" target="mainFrame" class="<%= request.getRequestURI().contains("viewfeedback") ? "active" : "" %>">
             <i class="fas fa-comments me-2"></i> Feedback
         </a>
         <a href="${pageContext.request.contextPath}/logout">

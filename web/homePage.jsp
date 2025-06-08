@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -11,7 +12,7 @@
         <!-- Font Awesome -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <!-- Custom CSS -->
-        <!--        <link href="css/homePage.css" rel="stylesheet">-->
+        <link href="css/homePage.css" rel="stylesheet">
         <!-- SweetAlert2 for notifications -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
@@ -42,6 +43,42 @@
                 font-size: 1.25rem;
                 font-weight: bold;
                 color: #0d6efd;
+            }
+
+            /* Add new styles for product card elements */
+            .product-card .card-title {
+                color: #000000;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+
+            .product-card .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .product-card .quantity-section {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .product-card .quantity-section .input-group {
+                width: 100%;
+            }
+
+            .product-card .quantity-section label {
+                width: 100%;
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+            }
+
+            .product-card .card-body {
+                padding: 1.25rem;
+            }
+
+            .product-card .card-text {
+                color: #6c757d;
+                margin-bottom: 1rem;
             }
 
             .feature-card {
@@ -99,125 +136,45 @@
             .social-icons a:hover {
                 color: #0d6efd;
             }
+
+            .dropdown-menu.show {
+                display: block !important;
+            }
+
+            .quantity-selector {
+                display: flex;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                overflow: hidden;
+                width: 120px;
+                height: 36px;
+                background: #fff;
+            }
+            .qty-btn {
+                width: 36px;
+                border: none;
+                background: none;
+                font-size: 1.25rem;
+                color: #333;
+                cursor: pointer;
+                outline: none;
+                transition: background 0.2s;
+            }
+            .qty-btn:hover {
+                background: #f0f0f0;
+            }
+            .qty-input {
+                width: 48px;
+                border: none;
+                outline: none;
+                font-size: 1.25rem;
+                background: none;
+            }
         </style>
     </head>
     <body>
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <i class="fas fa-phone-alt me-2"></i> 24/7 Customer Service: 1-800-123-4567
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <span class="me-3"><i class="fas fa-truck me-1"></i> Free shipping on orders over $100</span>
-                        <span><i class="fas fa-map-marker-alt me-1"></i> Track Order</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
-            <div class="container">
-                <a class="navbar-brand" href="#">
-                    <i class="fas fa-microchip me-2"></i>
-                    <span class="fw-bold">CES</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                All Products
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">CPUs</a></li>
-                                <li><a class="dropdown-item" href="#">Motherboards</a></li>
-                                <li><a class="dropdown-item" href="#">Graphics Cards</a></li>
-                                <li><a class="dropdown-item" href="#">Memory (RAM)</a></li>
-                                <li><a class="dropdown-item" href="#">Storage</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">New Arrivals</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Today's Deals</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Custom Builds</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/viewblogs">Blog</a>
-                        </li>
-                    </ul>
-                    <form class="d-flex me-3">
-                        <div class="input-group">
-                            <input type="search" class="form-control" placeholder="Search products...">
-                            <button class="btn btn-outline-primary" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </form>
-                    <div class="d-flex align-items-center">
-                        <c:choose>
-                            <c:when test="${not empty sessionScope.userAuth}">
-                                <!-- User Dropdown -->
-                                <div class="dropdown me-3">
-                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-user me-1"></i> ${sessionScope.user_name}
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <c:if test="${sessionScope.user_role eq 'admin'}">
-                                            <li>
-                                                <a class="dropdown-item text-primary" href="${pageContext.request.contextPath}/adminDashboard.jsp">
-                                                    <i class="fas fa-gauge-high me-2"></i>Admin Dashboard
-                                                </a>
-                                            </li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            </c:if>
-                                        <li>
-                                            <c:choose>
-                                                <c:when test="${sessionScope.user_role eq 'admin'}">
-                                                    <a class="dropdown-item" href="${pageContext.request.contextPath}/adminDashboard.jsp">
-                                                        <i class="fas fa-user-circle me-2"></i>Profile
-                                                    </a>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <a class="dropdown-item" href="${pageContext.request.contextPath}/profile">
-                                                        <i class="fas fa-user-circle me-2"></i>Profile
-                                                    </a>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </li>
-                                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/orderHistory"><i class="fas fa-history me-2"></i>Order History</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-danger" href="${pageContext.request.contextPath}/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
-                                    </ul>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-primary me-2">
-                                    <i class="fas fa-user me-1"></i> Login
-                                </a>
-                                <a href="${pageContext.request.contextPath}/register" class="btn btn-primary me-2">
-                                    <i class="fas fa-user-plus me-1"></i> Register
-                                </a>
-                            </c:otherwise>
-                        </c:choose>
-                        <a href="view-cart" class="btn btn-outline-primary position-relative">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span id="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                0
-                            </span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        <!-- Include Header -->
+        <jsp:include page="header.jsp"/>
 
         <!-- Hero Section -->
         <section class="hero-section">
@@ -306,34 +263,21 @@
                                     </div>
                                 </a>       
 
-                                    <!-- Add to Cart Button -->
-                                    <div class="d-grid gap-2">
-                                        <!-- View Feedback Button -->
-                                        <button class="btn btn-outline-secondary" 
-                                                onclick="viewFeedback(${product.id})"
-                                                id="feedbackBtn_${product.id}">
-                                            <i class="fas fa-comments me-2"></i>View Feedback
-                                        </button>
-                                        
-                                        <button class="btn btn-primary" 
-                                                onclick="addToCart(${product.id}, '${product.name}', ${product.price})"
-                                                id="addBtn_${product.id}">
-                                            <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                                    </div>
-                                <!-- Quantity Selector todo-->
+                                <!-- Quantity Selector -->
                                 <div class="d-flex align-items-center mb-3">
-                                    <label class="me-2">Qty:</label>
-                                    <div class="input-group" style="width: 120px;">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="changeQuantity(${product.id}, -1)">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" class="form-control form-control-sm text-center" 
-                                               id="quantity_${product.id}" value="1" min="1" max="99">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="changeQuantity(${product.id}, 1)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
+                                    <div class="quantity-selector" style="width: 120px; margin: 0 auto;">
+                                        <button type="button" class="qty-btn" onclick="changeQuantity(${product.id}, -1)">-</button>
+                                        <input type="number" id="quantity_${product.id}" value="1" min="1" max="99" class="qty-input" style="text-align:center;">
+                                        <button type="button" class="qty-btn" onclick="changeQuantity(${product.id}, 1)">+</button>
                                     </div>
                                 </div>
+
+                                <!-- Add to Cart Button -->
+                                <button class="btn btn-primary w-100" 
+                                        onclick="addToCart(${product.id}, '${product.name}', ${product.price})"
+                                        id="addBtn_${product.id}">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
                             </div>
                         </div>
                     </c:forEach>
@@ -435,11 +379,100 @@
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+        <!-- Initialize Bootstrap Components -->
+        <script>
+            // Function to initialize dropdowns
+            function initializeDropdowns() {
+                try {
+                    // Check if Bootstrap is loaded
+                    if (typeof bootstrap === 'undefined') {
+                        console.error('Bootstrap is not loaded properly');
+                        return;
+                    }
+
+                    // Initialize all dropdowns
+                    const dropdownElementList = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+                    if (dropdownElementList.length === 0) {
+                        console.warn('No dropdown elements found');
+                        return;
+                    }
+
+                    dropdownElementList.forEach(dropdownToggle => {
+                        try {
+                            // Remove any existing dropdown instance
+                            const existingDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
+                            if (existingDropdown) {
+                                existingDropdown.dispose();
+                            }
+
+                            // Create new dropdown instance
+                            const dropdown = new bootstrap.Dropdown(dropdownToggle);
+                            
+                            // Add click handler
+                            dropdownToggle.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                dropdown.toggle();
+                            });
+
+                            // Debug info
+                            console.log('Dropdown initialized:', dropdownToggle.id);
+                        } catch (err) {
+                            console.error('Error initializing dropdown:', err);
+                        }
+                    });
+
+                    // Add hover functionality
+                    const dropdownMenus = document.querySelectorAll('.dropdown');
+                    dropdownMenus.forEach(dropdown => {
+                        const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+                        
+                        dropdown.addEventListener('mouseenter', function() {
+                            const instance = bootstrap.Dropdown.getInstance(toggle);
+                            if (instance) {
+                                instance.show();
+                            } else {
+                                new bootstrap.Dropdown(toggle).show();
+                            }
+                        });
+                        
+                        dropdown.addEventListener('mouseleave', function() {
+                            const instance = bootstrap.Dropdown.getInstance(toggle);
+                            if (instance) {
+                                instance.hide();
+                            }
+                        });
+                    });
+
+                    // Log total number of dropdowns
+                    console.log('Total dropdowns found:', dropdownElementList.length);
+                    
+                } catch (err) {
+                    console.error('Error in dropdown initialization:', err);
+                }
+            }
+
+            // Initialize on DOMContentLoaded
+            document.addEventListener('DOMContentLoaded', initializeDropdowns);
+
+            // Re-initialize on dynamic content changes
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length || mutation.removedNodes.length) {
+                        initializeDropdowns();
+                    }
+                });
+            });
+
+            // Start observing the document with the configured parameters
+            observer.observe(document.body, { childList: true, subtree: true });
+        </script>
+
         <!-- Custom JavaScript for Cart Functionality -->
         <script>
                                             // Global variables
                                             let cartCount = 0;
-                                            const currentUserId = ${sessionScope.userAuth.id}; // Thay đổi theo user đang đăng nhập
+                                            const currentUserId = ${sessionScope.userAuth2.id}; // Thay đổi theo user đang đăng nhập
 
                                             // Function to change quantity
                                             function changeQuantity(productId, change) {
@@ -471,7 +504,7 @@
                                                         productId: productId,
                                                         quantity: quantity
                                                     }));
-                                                    const response = await fetch('http://localhost:9999/Project_G2/CartApiServlet', {
+                                                    const response = await fetch('http://localhost:9999/CES/CartApiServlet', {
                                                         method: 'POST',
                                                         headers: {
                                                             'Content-Type': 'application/json'

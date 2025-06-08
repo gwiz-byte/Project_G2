@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package shop.entities;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import shop.DAO.OrderDetailDAO;
 import shop.anotation.*;
 
 /**
@@ -44,4 +42,14 @@ public class Order {
     
     @Column(name = "address")
     String address;
+    
+    List<OrderDetail> orderDetails;
+    
+    public void setorderDetailsFunc(){
+        try {
+            this.orderDetails = new OrderDetailDAO().getByOrderId(this.id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

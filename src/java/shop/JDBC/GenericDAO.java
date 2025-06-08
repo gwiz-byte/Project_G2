@@ -8,11 +8,12 @@ package shop.JDBC;
  *
  * @author admin
  */
-
 import shop.constant.ServerConnectionInfo;
 import shop.anotation.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
                 if (field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(Id.class)) {
                     field.setAccessible(true);
                     Object value = field.get(t);
-                    
+
                     setParameterValue(stmt, index++, value, field);
                 }
             }
@@ -151,11 +152,37 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
     }
 
     @Override
+    public K insertGetKey(T t) throws SQLException {
+        String sql = getInsertQuery();
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            setInsertParams(stmt, t);
+            if (stmt.executeUpdate() > 0) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    Object key = (K) rs.getObject(1);
+                    // Chuyển đổi kiểu khóa chính dựa vào kiểu thực tế của nó
+                    if (key instanceof BigDecimal) {
+                        Integer key_int = ((BigDecimal) key).intValueExact();
+                        return (K) key_int; // Nếu là Integer
+                    } else if (key instanceof BigInteger) {
+                        Integer key_int = ((BigInteger) key).intValueExact();
+                        return (K) key_int;
+                    } else if (key instanceof String) {
+                        return (K) key; // Nếu là String
+                    } else {
+                        throw new SQLException("Không thể xử lý kiểu của khóa chính: " + key.getClass().getName());
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    @Override
     public List<T> getAll() throws SQLException {
         String sql = "SELECT * FROM " + tableName;
         List<T> data = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 data.add(mapRow(rs));
             }
@@ -197,7 +224,7 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
 
     public List<T> findByOr(Object... params) throws SQLException {
         String[] columnNames = getColumnNamesFromAnnotation();
-        
+
         validateParams(columnNames, params);
 
         String sql = "SELECT * FROM " + tableName + " WHERE ";
@@ -209,7 +236,7 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
             }
         }
         sql = sql + operations.toString();
-        
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             setQueryParams(stmt, params);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -221,10 +248,10 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
             }
         }
     }
-    
+
     public List<T> findByAnd(Object... params) throws SQLException {
         String[] columnNames = getColumnNamesFromAnnotation();
-        
+
         validateParams(columnNames, params);
 
         String sql = "SELECT * FROM " + tableName + " WHERE ";
@@ -236,7 +263,7 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
             }
         }
         sql = sql + operations.toString();
-        
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             setQueryParams(stmt, params);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -278,7 +305,7 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         String methodName = stackTrace[3].getMethodName(); // Điều chỉnh index để lấy đúng method
         Method[] methods = this.getClass().getMethods();
-        
+
         for (Method method : methods) {
             if (method.isAnnotationPresent(FindBy.class) && method.getName().equals(methodName)) {
                 return method.getAnnotation(FindBy.class).columns();
@@ -286,12 +313,12 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
         }
         throw new IllegalArgumentException("No method found with @FindBy annotation for method: " + methodName);
     }
-    
+
     private String getQueryFromAnnotation() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         String methodName = stackTrace[3].getMethodName(); // Điều chỉnh index để lấy đúng method
         Method[] methods = this.getClass().getMethods();
-        
+
         for (Method method : methods) {
             if (method.isAnnotationPresent(Query.class) && method.getName().equals(methodName)) {
                 return method.getAnnotation(Query.class).sql();
@@ -299,7 +326,7 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
         }
         throw new IllegalArgumentException("No method found with @Query annotation for method: " + methodName);
     }
-    
+
     private void validateParams(String[] columnNames, Object[] params) {
         if (columnNames.length > params.length) {
             throw new IllegalArgumentException("Not enough params for this query. Expected: " + columnNames.length + ", Got: " + params.length);
@@ -308,7 +335,7 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
             throw new IllegalArgumentException("Too many parameters. Expected: " + columnNames.length + ", Got: " + params.length);
         }
     }
-    
+
     private void setQueryParams(PreparedStatement stmt, Object[] params) throws SQLException {
         for (int i = 0; i < params.length; i++) {
             Object param = params[i];
@@ -334,7 +361,7 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
                     field.setAccessible(true);
                     String columnName = field.getAnnotation(Column.class).name();
                     Object value = rs.getObject(columnName);
-                    
+
                     // Xử lý mapping đặc biệt cho MySQL
                     if (value != null) {
                         // Xử lý Boolean từ TINYINT(1)
@@ -342,22 +369,19 @@ public abstract class GenericDAO<T, K> implements BaseDAO<T, K> {
                             if (value instanceof Number) {
                                 value = ((Number) value).intValue() != 0;
                             }
-                        }
-                        // Xử lý Date/Timestamp
+                        } // Xử lý Date/Timestamp
                         else if (field.getType() == java.util.Date.class && value instanceof Timestamp) {
                             value = new java.util.Date(((Timestamp) value).getTime());
-                        }
-                        // Xử lý ENUM - MySQL ENUM được trả về dưới dạng String
+                        } // Xử lý ENUM - MySQL ENUM được trả về dưới dạng String
                         else if (field.getType() == String.class && isEnumField(field)) {
                             // MySQL ENUM đã được trả về dưới dạng String, không cần xử lý thêm
                             value = value.toString();
-                        }
-                        // Xử lý trường hợp ENUM khác (nếu value không phải String nhưng field là String ENUM)
+                        } // Xử lý trường hợp ENUM khác (nếu value không phải String nhưng field là String ENUM)
                         else if (field.getType() == String.class && !(value instanceof String) && isEnumField(field)) {
                             value = value.toString();
                         }
                     }
-                    
+
                     field.set(obj, value);
                 }
             }

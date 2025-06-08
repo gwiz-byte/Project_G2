@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.User;
+import java.util.Vector;
 
 public class UserDAO {
     private static UserDAO instance;
@@ -130,6 +131,57 @@ public class UserDAO {
                         rs.getString("phone_number"),
                         rs.getString("address")
                     );
+                }
+            }
+        }
+        return null;
+    }
+
+    public Vector<User> getAllUsers() throws SQLException {
+        Vector<User> users = new Vector<>();
+        String sql = "SELECT * FROM users ORDER BY name";
+        
+        try (Connection conn = dbContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                User user = new User(
+                    rs.getString("name"),
+                    rs.getString("password"),
+                    rs.getString("role"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("phone_number"),
+                    rs.getString("address")
+                );
+                user.setId(rs.getInt("id")); // You'll need to add setId() to User class
+                users.add(user);
+            }
+        }
+        return users;
+    }
+
+    public User getUserByUsername(String username) throws SQLException {
+        String sql = "SELECT * FROM users WHERE name = ?";
+        try (Connection conn = dbContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, username);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User(
+                        rs.getString("name"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("phone_number"),
+                        rs.getString("address")
+                    );
+                    user.setId(rs.getInt("id")); // You'll need to add setId() to User class
+                    return user;
                 }
             }
         }

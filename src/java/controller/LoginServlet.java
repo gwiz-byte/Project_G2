@@ -33,7 +33,7 @@ public class LoginServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    public void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -59,7 +59,7 @@ public class LoginServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         request.getRequestDispatcher("login.jsp").forward(request, response);
     } 
@@ -72,7 +72,7 @@ public class LoginServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -82,8 +82,10 @@ public class LoginServlet extends HttpServlet {
             User user = UserDAO.getInstance().login(email, password);
             
             if (user != null) {
+                shop.entities.User userAuth = new shop.DAO.UserDAO().findUserByEmail(email);
                 HttpSession session = request.getSession();
                 session.setAttribute("userAuth", user);
+                session.setAttribute("userAuth2", userAuth);
                 session.setAttribute("session_login", email);
                 session.setAttribute("user_role", user.getRole());
                 session.setAttribute("user_name", user.getFullname());

@@ -22,11 +22,13 @@ public interface BaseDAO<T, K> {
 
     boolean insert(T t) throws SQLException, ClassNotFoundException;
 
+    K insertGetKey(T t) throws SQLException, ClassNotFoundException;
+
     List<T> getAll() throws SQLException, ClassNotFoundException;
 
     T getById(K id) throws SQLException, ClassNotFoundException;
 
     boolean update(T t) throws SQLException, ClassNotFoundException;
-    
+
     boolean deleteById(K id) throws SQLException, ClassNotFoundException;
 }

@@ -369,7 +369,7 @@
                     </div>
 
                     <div class="checkout-section">
-                        <button class="btn btn-continue" onclick="window.location.href = '/Project_G2/productservlet'">
+                        <button class="btn btn-continue" onclick="window.location.href = '/CES/homepageservlet'">
                             🛍️ Tiếp Tục Mua Sắm
                         </button>
                         <button class="btn btn-checkout" onclick="proceedToCheckout()">
@@ -382,7 +382,7 @@
 
         <script>
             // Configuration
-            const API_BASE_URL = '/Project_G2/CartApiServlet';
+            const API_BASE_URL = '/CES/CartApiServlet';
             const userId = 1; // This should be dynamically set from session
 
             // Global variables
@@ -612,7 +612,7 @@
                 }
 
                 // Redirect to checkout page
-                window.location.href = '/shop/checkout';
+                window.location.href = '/CES/checkout';
             }
 
             // Handle page refresh

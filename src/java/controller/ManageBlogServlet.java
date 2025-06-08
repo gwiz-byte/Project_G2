@@ -25,14 +25,14 @@ import java.util.Map;
  *
  * @author ADMIN
  */
-@WebServlet(name="ViewBlogServlet", urlPatterns={"/viewblogs"})
-public class ViewBlogServlet extends HttpServlet {
+@WebServlet(name="ManageBlogServlet", urlPatterns={"/manageblogs"})
+public class ManageBlogServlet extends HttpServlet {
    
     private static final int PAGE_SIZE = 10; // Number of blogs per page
     private final BlogDAO blogDAO;
     private final UserDAO userDAO;
 
-    public ViewBlogServlet() {
+    public ManageBlogServlet() {
         blogDAO = new BlogDAO();
         userDAO = UserDAO.getInstance();
     }
@@ -54,6 +54,10 @@ public class ViewBlogServlet extends HttpServlet {
             
             // Create a map to store user information
             Map<Integer, String> userNames = new HashMap<>();
+            
+            // Get all users for the dropdown
+            Vector<User> userList = userDAO.getAllUsers();
+            request.setAttribute("userList", userList);
             
             // Fetch user information for each blog
             for (Blog blog : allBlogs) {
@@ -156,7 +160,7 @@ public class ViewBlogServlet extends HttpServlet {
             request.setAttribute("totalBlogs", totalBlogs);
             
             // Forward to JSP
-            request.getRequestDispatcher("viewblogs.jsp").forward(request, response);
+            request.getRequestDispatcher("ManageBlog.jsp").forward(request, response);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,7 +169,6 @@ public class ViewBlogServlet extends HttpServlet {
         }
     } 
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
@@ -184,11 +187,11 @@ public class ViewBlogServlet extends HttpServlet {
             } else if (action.equals("view")) {
                 viewBlog(request, response);
             } else {
-                response.sendRedirect("viewblogs");
+                response.sendRedirect("manageblogs");
             }
         } catch (Exception ex) {
             request.setAttribute("error", "Error: " + ex.getMessage());
-            request.getRequestDispatcher("viewblogs.jsp").forward(request, response);
+            request.getRequestDispatcher("ManageBlog.jsp").forward(request, response);
         }
     } 
 
@@ -216,12 +219,12 @@ public class ViewBlogServlet extends HttpServlet {
                     deleteBlog(request, response);
                     break;
                 default:
-                    response.sendRedirect("viewblogs");
+                    response.sendRedirect("manageblogs");
                     break;
             }
         } catch (Exception ex) {
             request.setAttribute("error", "Error: " + ex.getMessage());
-            request.getRequestDispatcher("viewblogs.jsp").forward(request, response);
+            request.getRequestDispatcher("ManageBlog.jsp").forward(request, response);
         }
     }
 
@@ -231,8 +234,8 @@ public class ViewBlogServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "ViewBlog Servlet handles displaying and managing blogs";
-    }// </editor-fold>
+        return "ManageBlog Servlet handles displaying and managing blogs";
+    }
 
     private void listBlogs(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -251,33 +254,87 @@ public class ViewBlogServlet extends HttpServlet {
                 request.setAttribute("blog", blog);
                 request.setAttribute("author", user != null ? user.getFullname() : "Unknown User");
                 
-                // Forward to the view blogs page with the modal open
-                request.getRequestDispatcher("viewblogs.jsp").forward(request, response);
+                // Forward to the manage blog page with the modal open
+                request.getRequestDispatcher("ManageBlog.jsp").forward(request, response);
             } else {
                 request.getSession().setAttribute("error", "Blog not found");
-                response.sendRedirect(request.getContextPath() + "/viewblogs");
+                response.sendRedirect(request.getContextPath() + "/manageblogs");
             }
         } catch (Exception ex) {
             request.getSession().setAttribute("error", "Error viewing blog: " + ex.getMessage());
-            response.sendRedirect(request.getContextPath() + "/viewblogs");
+            response.sendRedirect(request.getContextPath() + "/manageblogs");
         }
     }
 
     private void addBlog(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        // Implementation not needed for view servlet
-        response.sendRedirect(request.getContextPath() + "/viewblogs");
+        try {
+            String username = request.getParameter("username");
+            String title = request.getParameter("title");
+            String content = request.getParameter("content");
+            
+            // Get user by username
+            User user = userDAO.getUserByUsername(username);
+            if (user == null) {
+                throw new Exception("User not found");
+            }
+            
+            // Create new blog
+            Blog blog = new Blog(0, title, content, user.getId(), null, null);
+            
+            // Save blog
+            blogDAO.insertBlog(blog);
+            request.getSession().setAttribute("success", "Blog added successfully");
+            
+            // Redirect back to manage blogs page
+            response.sendRedirect(request.getContextPath() + "/manageblogs");
+            
+        } catch (Exception ex) {
+            request.getSession().setAttribute("error", "Error: " + ex.getMessage());
+            response.sendRedirect(request.getContextPath() + "/manageblogs");
+        }
     }
 
     private void updateBlog(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        // Implementation not needed for view servlet
-        response.sendRedirect(request.getContextPath() + "/viewblogs");
+        try {
+            int blogId = Integer.parseInt(request.getParameter("id"));
+            String title = request.getParameter("title");
+            String content = request.getParameter("content");
+            int userId = Integer.parseInt(request.getParameter("user_id"));
+            
+            // Create blog object
+            Blog blog = new Blog(blogId, title, content, userId, null, null);
+            
+            // Update blog
+            blogDAO.updateBlog(blog);
+            request.getSession().setAttribute("success", "Blog updated successfully");
+            
+            // Redirect back to manage blogs page
+            response.sendRedirect(request.getContextPath() + "/manageblogs");
+            
+        } catch (Exception ex) {
+            request.getSession().setAttribute("error", "Error updating blog: " + ex.getMessage());
+            response.sendRedirect(request.getContextPath() + "/manageblogs");
+        }
     }
 
     private void deleteBlog(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        // Implementation not needed for view servlet
-        response.sendRedirect(request.getContextPath() + "/viewblogs");
+        try {
+            int blogId = Integer.parseInt(request.getParameter("id"));
+            int userId = Integer.parseInt(request.getParameter("user_id"));
+            
+            // Delete blog
+            blogDAO.deleteBlog(blogId, userId);
+            request.getSession().setAttribute("success", "Blog deleted successfully");
+            
+            // Redirect back to manage blogs page
+            response.sendRedirect(request.getContextPath() + "/manageblogs");
+            
+        } catch (Exception ex) {
+            request.getSession().setAttribute("error", "Error deleting blog: " + ex.getMessage());
+            response.sendRedirect(request.getContextPath() + "/manageblogs");
+        }
     }
-}
+} 

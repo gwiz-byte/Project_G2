@@ -41,7 +41,40 @@ public class ProductDAO {
         return listProduct;
     }
 
+    public Vector<Products> getAllProductWithCategoryName() {
+        DBContext db = DBContext.getInstance();
+        Vector<Products> listProduct = new Vector<>();
+        String sql = "SELECT p.*, c.name AS category_name "
+                + "FROM products p "
+                + "JOIN categories c ON p.category_id = c.id";
+        try {
+            PreparedStatement ptm = db.getConnection().prepareStatement(sql);
+            ResultSet rs = ptm.executeQuery();
+            while (rs.next()) {
+                String jsonSpec = rs.getString("spec_description");
+
+                Products p = new Products(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("brand"),
+                        rs.getInt("category_id"),
+                        rs.getDouble("price"),
+                        rs.getInt("stock"),
+                        rs.getString("image_url"),
+                        rs.getString("description"),
+                        jsonSpec,
+                        rs.getString("status"),
+                        rs.getString("category_name") // categoryName from JOIN
+                );
+                listProduct.add(p);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return listProduct;
+    }
 //----------------------------------Search product
+
     public Vector<Products> searchProduct(String productName) {
         DBContext db = DBContext.getInstance();
         Vector<Products> list = new Vector<>();
@@ -338,9 +371,9 @@ public class ProductDAO {
     public Vector<Products> getCPUProductsWithPaging(int page, int productsPerPage) {
         DBContext db = DBContext.getInstance();
         Vector<Products> list = new Vector<>();
-        String sql = "SELECT * FROM products WHERE category_id = 1 AND status = 'active' " +
-                    "ORDER BY id " +
-                    "LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM products WHERE category_id = 1 AND status = 'active' "
+                + "ORDER BY id "
+                + "LIMIT ? OFFSET ?";
         try {
             PreparedStatement ptm = db.getConnection().prepareStatement(sql);
             ptm.setInt(1, productsPerPage);
@@ -349,16 +382,16 @@ public class ProductDAO {
             while (rs.next()) {
                 String jsonSpec = rs.getString("spec_description");
                 Products p = new Products(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("brand"),
-                    rs.getInt("category_id"),
-                    rs.getDouble("price"),
-                    rs.getInt("stock"),
-                    rs.getString("image_url"),
-                    rs.getString("description"),
-                    jsonSpec,
-                    rs.getString("status")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("brand"),
+                        rs.getInt("category_id"),
+                        rs.getDouble("price"),
+                        rs.getInt("stock"),
+                        rs.getString("image_url"),
+                        rs.getString("description"),
+                        jsonSpec,
+                        rs.getString("status")
                 );
                 list.add(p);
             }

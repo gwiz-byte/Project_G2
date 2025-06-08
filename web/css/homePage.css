@@ -11,40 +11,79 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     --primary-color: #0d6efd;
     --secondary-color: #6c757d;
     --accent-color: #ffc107;
+    --topbar-height: 40px;
+    --navbar-height: 76px;
+    --total-header-height: calc(var(--topbar-height) + var(--navbar-height));
+}
+
+/* Add padding to body to prevent content from hiding under fixed header */
+body {
+    padding-top: var(--total-header-height);
+    margin: 0;
 }
 
 .top-bar {
-    background: #2b2b2b;
-    color: #fff;
-    padding: 8px 0;
-    font-size: 14px;
+    background-color: #343a40;
+    color: white;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    height: var(--topbar-height);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1030;
+    margin: 0;
 }
 
 .hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-                url('https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&q=80');
+    background: linear-gradient(rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)),
+                url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     color: white;
-    padding: 120px 0;
+    padding: 100px 0;
+    margin: 0;
+    min-height: calc(100vh - var(--total-header-height));
+    display: flex;
+    align-items: center;
+    position: relative;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 1;
 }
 
 .feature-card {
     text-align: center;
-    padding: 30px;
-    background: #f8f9fa;
+    padding: 2rem;
     border-radius: 10px;
-    transition: transform 0.3s;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
 }
 
 .feature-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
 }
 
 .feature-icon {
-    font-size: 2.5rem;
-    color: var(--primary-color);
-    margin-bottom: 20px;
+    font-size: 3rem;
+    color: #0d6efd;
+    margin-bottom: 1rem;
 }
 
 .category-card {
@@ -64,24 +103,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 }
 
 .deal-section {
-    background: #f8f9fa;
-    padding: 60px 0;
+    background-color: #f8f9fa;
+    padding: 50px 0;
 }
 
 .product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
-    transition: all 0.3s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
 }
 
 .price {
-    color: var(--primary-color);
+    font-size: 1.25rem;
     font-weight: bold;
-    font-size: 1.2rem;
+    color: #0d6efd;
 }
 
 .old-price {
@@ -91,28 +130,121 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 }
 
 footer {
-    background: #2b2b2b;
-    color: #fff;
-    padding: 60px 0 30px;
+    background-color: #343a40;
+    color: white;
+    padding: 50px 0 20px 0;
+    margin-top: 50px;
 }
 
 .social-icons a {
-    color: #fff;
+    color: white;
+    font-size: 1.5rem;
     margin-right: 15px;
-    font-size: 1.2rem;
+    transition: color 0.3s ease;
 }
 
-.newsletter-form {
-    position: relative;
+.social-icons a:hover {
+    color: #0d6efd;
 }
 
-.newsletter-form input {
-    padding-right: 120px;
+.dropdown-menu.show {
+    display: block !important;
 }
 
-.newsletter-form button {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
+.quantity-selector {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    width: 120px;
+    height: 36px;
+    background: #fff;
+}
+
+.qty-btn {
+    width: 36px;
+    border: none;
+    background: none;
+    font-size: 1.25rem;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.2s;
+}
+
+.qty-btn:hover {
+    background: #f0f0f0;
+}
+
+.qty-input {
+    width: 48px;
+    border: none;
+    outline: none;
+    font-size: 1.25rem;
+    background: none;
+    text-align: center;
+}
+
+/* Fixed Navigation Styles */
+.navbar.fixed-top {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    top: var(--topbar-height);
+    height: var(--navbar-height);
+    margin: 0;
+}
+
+.navbar.fixed-top .navbar-brand {
+    transition: all 0.3s ease;
+}
+
+.navbar.fixed-top .navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+}
+
+.input-group .btn {
+    border-color: #dee2e6;
+}
+
+.input-group .form-control {
+    border-left: 0;
+    border-right: 0;
+}
+
+.product-card .card-title {
+    color: #000000;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.product-card .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.product-card .quantity-section {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.product-card .quantity-section .input-group {
+    width: 100%;
+}
+
+.product-card .quantity-section label {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.product-card .card-body {
+    padding: 1.25rem;
+}
+
+.product-card .card-text {
+    color: #6c757d;
+    margin-bottom: 1rem;
 }

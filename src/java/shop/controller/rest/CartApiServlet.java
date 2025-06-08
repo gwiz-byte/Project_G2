@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import shop.DAO.CartItemDAO;
 import shop.entities.CartItem;
+import shop.entities.User;
 import shop.utils.ResponseUtils;
 
 @WebServlet(name = "CartApiServlet", urlPatterns = {"/CartApiServlet"})
@@ -27,9 +28,10 @@ public class CartApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        
         String pathInfo = request.getPathInfo();
 
         try {
@@ -46,7 +48,7 @@ public class CartApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String pathInfo = request.getPathInfo();
@@ -74,7 +76,7 @@ public class CartApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+    public void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String pathInfo = request.getPathInfo();
@@ -91,13 +93,8 @@ public class CartApiServlet extends HttpServlet {
     private void handleGetCartItems(HttpServletRequest request, HttpServletResponse response)
             throws IOException, Exception {
 
-        String userIdStr = request.getParameter("userId");
-        if (userIdStr == null) {
-            ResponseUtils.sendErrorResponse(response, 400, "userId parameter is required");
-            return;
-        }
-
-        int userId = Integer.parseInt(userIdStr);
+        User userAuth = (User) request.getSession().getAttribute("userAuth2");
+        int userId = userAuth.getId();
         List<CartItem> cartItems = cartItemDAO.getAllByUserId(userId);
 
         // Set product data for each cart item

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class CreateAdminServlet extends HttpServlet {
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             UserDAO.getInstance().insertAdminUser();

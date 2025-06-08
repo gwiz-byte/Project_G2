@@ -34,7 +34,7 @@ public class ProductServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    public void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String service = request.getParameter("service");
@@ -51,9 +51,9 @@ public class ProductServlet extends HttpServlet {
                     String order = request.getParameter("order");
 
                     if (sortBy == null || order == null || order.equals("none")) {
-                        plist = dao.getAllProduct();
+                        plist = dao.getAllProductWithCategoryName();
                     } else {
-                        plist = dao.getSortedProduct(sortBy, order); // You’ll need to create this method
+                        plist = dao.getSortedProduct(sortBy, order);
                     }
 
                     request.setAttribute("product", plist);
@@ -185,7 +185,7 @@ public class ProductServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -199,7 +199,7 @@ public class ProductServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }

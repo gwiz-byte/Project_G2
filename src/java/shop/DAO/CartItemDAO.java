@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import shop.JDBC.GenericDAO;
 import shop.anotation.FindBy;
+import shop.anotation.Query;
 import shop.entities.CartItem;
 
 /**
@@ -26,6 +27,13 @@ public class CartItemDAO extends GenericDAO<CartItem, Integer>{
     @FindBy(columns = {"user_id","product_id"})
     public CartItem getByUserIdAndProductId(Integer userId, Integer productId) throws SQLException {
         List<CartItem> obs = findByAnd(userId, productId);
-        return obs.size() > 0 ? obs.get(0) : null;
+        return !obs.isEmpty() ? obs.get(0) : null;
+    }
+    
+    @Query(sql = """
+                 delete from cart_items where user_id = ?
+                 """)
+    public boolean deleteByUserId(Integer userId) throws SQLException {
+        return executeQueryUpdateOrCheck(userId);
     }
 }

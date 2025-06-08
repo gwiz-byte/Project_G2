@@ -52,7 +52,7 @@ public class AuthorizationFilter implements Filter {
                 List<String> requiredRoles = Arrays.asList(rolesAllowed.roles());
 
                 //Lấy roles của user từ session
-                User userAuth = (User) req.getSession().getAttribute("userAuth");
+                User userAuth = (User) req.getSession().getAttribute("userAuth2");
                 List<String> userRoles = new ArrayList<>();
                 if (userAuth != null) {
                     userRoles.add(userAuth.getRole());
@@ -61,9 +61,9 @@ public class AuthorizationFilter implements Filter {
                 //Kiểm tra quyền
                 if (userAuth == null || userRoles.stream().noneMatch(requiredRoles::contains)) {
                     if (userAuth == null) {
-                        res.sendRedirect("/Project_G2/login"); // Redirect nếu không có quyền
+                        res.sendRedirect("/CES/login"); // Redirect nếu không có quyền
                     } else {
-                        res.sendRedirect("/Project_G2/error");
+                        res.sendRedirect("/CES/error");
                     }
                     return;
                 }

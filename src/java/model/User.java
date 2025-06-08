@@ -1,6 +1,7 @@
 package model;
 
 public class User {
+    private int id;
     private String username;
     private String password;
     private String role;
@@ -20,6 +21,14 @@ public class User {
         this.email = email;
         this.phone = phone;
         this.address = address;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFullname() {

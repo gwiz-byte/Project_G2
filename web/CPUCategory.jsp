@@ -61,24 +61,6 @@
                             <p class="product-description">${product.description}</p>
                             <span class="product-price">$${product.price}</span>
 
-                            <!-- Quantity Control -->
-                            <div class="quantity-control">
-                                <div class="quantity-input">
-                                    <div class="input-group">
-                                        <button class="btn" type="button" 
-                                                onclick="changeQuantity('${product.id}', -1)">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" class="form-control" 
-                                               id="quantity_${product.id}" value="1" min="1" max="99">
-                                        <button class="btn" type="button" 
-                                                onclick="changeQuantity('${product.id}', 1)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Add to Cart Button -->
                             <button class="btn btn-primary add-to-cart-btn" 
                                     onclick="addToCart('${product.id}', '${product.name}', '${product.price}')"
@@ -118,22 +100,8 @@
 
         <!-- Custom JavaScript -->
         <script>
-            function changeQuantity(productId, change) {
-                const quantityInput = document.getElementById('quantity_' + productId);
-                let currentQuantity = parseInt(quantityInput.value);
-                let newQuantity = currentQuantity + change;
-
-                if (newQuantity < 1)
-                    newQuantity = 1;
-                if (newQuantity > 99)
-                    newQuantity = 99;
-
-                quantityInput.value = newQuantity;
-            }
 
             async function addToCart(productId, productName, productPrice) {
-                const quantityInput = document.getElementById('quantity_' + productId);
-                const quantity = parseInt(quantityInput.value);
                 const addButton = document.getElementById('addBtn_' + productId);
 
                 // Disable button and show loading
@@ -149,7 +117,7 @@
                         body: JSON.stringify({
                             userId: currentUserId,
                             productId: productId,
-                            quantity: quantity
+                            quantity: 1
                         })
                     });
 
@@ -164,9 +132,6 @@
                             timer: 2000,
                             showConfirmButton: false
                         });
-
-                        // Reset quantity to 1
-                        quantityInput.value = 1;
 
                         // Add visual feedback
                         addButton.classList.add('btn-success');

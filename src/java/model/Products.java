@@ -12,6 +12,7 @@ public class Products {
     private String description;
     private String spec_description;
     private String status;
+    private String categoryName;
 
     public Products(){
         
@@ -30,6 +31,28 @@ public class Products {
         this.description = description;
         this.spec_description = spec_description;
         this.status = status;
+    }
+
+    public Products(int id, String name, String brand, int category_id, double price, int stock, String image_url, String description, String spec_description, String status, String categoryName) {
+        this.id = id;
+        this.name = name;
+        this.brand = brand;
+        this.category_id = category_id;
+        this.price = price;
+        this.stock = stock;
+        this.image_url = image_url;
+        this.description = description;
+        this.spec_description = spec_description;
+        this.status = status;
+        this.categoryName = categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
     }
 
     public int getId() {

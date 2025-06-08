@@ -15,7 +15,7 @@ public class ServerConnectionInfo {
     public static final String PORT = "3306";
     public static final String DBNAME = "Project_G2";
     public static final String USERNAME = "root";
-    public static final String PASSWORD = "msqldt154A!";
+    public static final String PASSWORD = "sasa";
     public static final String CLASS_DRIVER = "com.mysql.cj.jdbc.Driver";
     public static final String CONNECTION_URL = "jdbc:mysql://" + HOSTNAME + ":" + PORT + "/" + DBNAME 
             + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
